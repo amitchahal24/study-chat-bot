@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'screens/signup_screen.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -13,25 +15,89 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+  // Define the overall brightness of the theme.
+  brightness: Brightness.light,
+
+  // Primary Color
+  primaryColor: const Color(0xFFFF9800), // Vibrant Orange
+
+  // ColorScheme for Material 3 (more dynamic color system)
+  colorScheme: const ColorScheme.light(
+    primary: Color(0xFFFF9800), // Vibrant Orange
+    secondary: Color(0xFFFFC107), // Light Beige
+    surface: Color(0xFFF5F5DC), // Light Beige (same as background for flat surfaces)
+    error: Colors.red,
+    onPrimary: Colors.black, // Text color on primary color
+    onSecondary: Colors.black, // Dark Brown text on background
+    onSurface: Color(0xFF3E2723), // Dark Brown text on surface
+    onError: Colors.white,
+  ),
+
+  // Define text theme to be used in the app
+  textTheme: const TextTheme(
+    headlineLarge: TextStyle(
+      fontSize: 34.0,
+      fontWeight: FontWeight.bold,
+      color: Color(0xFF3E2723), // Dark Brown
+    ),
+    headlineMedium: TextStyle(
+      fontSize: 24.0,
+      fontWeight: FontWeight.bold,
+      color: Color(0xFF3E2723), // Dark Brown
+    ),
+    headlineSmall: TextStyle(
+      fontSize: 20.0,
+      fontWeight: FontWeight.w600,
+      color: Color(0xFF3E2723), // Dark Brown
+    ),
+    bodyLarge: TextStyle(
+      fontSize: 18.0,
+      color: Color(0xFF3E2723), // Dark Brown
+    ),
+    bodyMedium: TextStyle(
+      fontSize: 16.0,
+      color: Color
+(0xFF3E2723), // Dark Brown
+    ),
+    bodySmall: TextStyle(
+      fontSize: 14.0,
+      color: Color(0xFF3E2723), // Dark Brown
+    ),
+  ),
+
+  // AppBar Theme
+  appBarTheme: const AppBarTheme(
+    backgroundColor: Color(0xFFFF9800), // Vibrant Orange
+    foregroundColor: Colors.black,
+    elevation: 2.0,
+    titleTextStyle: TextStyle(color: Color(0xFFFF9800))
+  ),
+
+  // Button Theme
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: const Color(0xFF2196F3), // Blue Accent
+      foregroundColor: Colors.white, // White Text on buttons
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+    ),
+  ),
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+        foregroundColor: const Color(0xFF2196F3) // Blue Accent
+        ),
+  ),
+
+  // FloatingActionButton Theme
+  floatingActionButtonTheme: const FloatingActionButtonThemeData(
+    backgroundColor: Color(0xFF2196F3), // Blue Accent
+    foregroundColor: Colors.white,
+  ),
+
+  // Other UI elements can be customized here
+),
+      home: const SignUpScreen(),
     );
   }
 }
