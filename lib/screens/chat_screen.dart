@@ -1,4 +1,9 @@
+// Suggested code may be subject to a license. Learn more: ~LicenseLog:655653617.
+// Suggested code may be subject to a license. Learn more: ~LicenseLog:1868843743.
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -8,29 +13,51 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final List<ChatMessage> _messages = [
-    ChatMessage(text: "Hello!", sender: "user"),
-    ChatMessage(text: "Hi there!", sender: "other"),
-    ChatMessage(text: "How are you?", sender: "user"),
-    ChatMessage(text: "I'm good, thanks!", sender: "other"),
-  ];
+  final gemini = Gemini.instance;
+
+  final List<ChatMessage> _messages = [];
 
   final TextEditingController _messageController = TextEditingController();
 
   void _sendMessage() {
     if (_messageController.text.trim().isNotEmpty) {
       setState(() {
-        _messages.insert(0, ChatMessage(text: _messageController.text, sender: "user"));
+        _messages.insert(
+          0,
+          ChatMessage(text: _messageController.text, sender: "user"),
+        );
         _messageController.clear();
       });
+
+      final List<Content> contents = _messages.reversed.map((e) => Content(role: e.sender, parts: [Part.text(e.text)])).toList();
+
+      gemini
+          .chat(contents)
+          .then((value) {
+            log(value?.output ?? 'without output');
+            if (value?.output != null) {
+              final output = value!.output!;
+              
+              if(output.isNotEmpty){
+                setState(() {
+                  _messages.insert(
+                    0,
+                    ChatMessage(text: output, sender: "model"),
+                  );
+                });
+              }
+            }
+            
+          })
+          .catchError((e) => log('chat', error: e));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: AppBar(title: const Text("Chat"),),
-       drawer: Drawer(
+      appBar: AppBar(title: const Text("Chat")),
+      drawer: Drawer(
         backgroundColor: Theme.of(context).drawerTheme.backgroundColor,
         child: ListView(
           padding: EdgeInsets.zero,
@@ -39,11 +66,23 @@ class _ChatScreenState extends State<ChatScreen> {
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primary,
               ),
-              child: Text('Productivity Menu', style: TextStyle(color: Colors.white, fontSize: 24,),),
+              child: Text(
+                'Productivity Menu',
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
             ),
-            ListTile(title: const Text('Recommended Materials'), onTap: () {Navigator.pop(context);},),
-            ListTile(title: const Text('Study Plan'), onTap: () {Navigator.pop(context);},),
-            
+            ListTile(
+              title: const Text('Recommended Materials'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Study Plan'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
           ],
         ),
       ),
@@ -82,10 +121,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.send),
-            onPressed: _sendMessage,
-          ),
+          IconButton(icon: const Icon(Icons.send), onPressed: _sendMessage),
         ],
       ),
     );
@@ -103,7 +139,11 @@ class ChatBubble extends StatelessWidget {
   final String message;
   final bool isUserMessage;
 
-  const ChatBubble({super.key, required this.message, required this.isUserMessage});
+  const ChatBubble({
+    super.key,
+    required this.message,
+    required this.isUserMessage,
+  });
 
   @override
   Widget build(BuildContext context) {

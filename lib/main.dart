@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:myapp/screens/chat_screen.dart';
 
 import 'screens/demo_ai_screen.dart';
 import 'screens/signup_screen.dart';
@@ -103,7 +104,7 @@ class MyApp extends StatelessWidget {
 
   // Other UI elements can be customized here
 ),
-      home: const DemoAIScreen(),
+      home: const ChatScreen(),
     );
   }
 }
