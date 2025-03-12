@@ -104,7 +104,7 @@ class MyApp extends StatelessWidget {
 
   // Other UI elements can be customized here
 ),
-      home: const ChatScreen(),
+      home: const SignUpScreen(),
     );
   }
 }

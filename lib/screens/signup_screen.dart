@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:myapp/screens/login_screen.dart';
+
+import '../services/api_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -15,6 +19,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -31,7 +36,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       appBar: AppBar(
         title: const Text('Sign Up'),
       ),
-      body: Padding(
+      body: _isLoading? const Center(child: CircularProgressIndicator(),) : Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -124,11 +129,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 24.0),
                 ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // TODO: Implement sign up logic
-                    }
-                  },
+                   onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            setState(() {
+                              _isLoading = true;
+                            });
+                            var response = await ApiService.post('signup', {
+                              'name': _nameController.text,
+                              'email': _emailController.text,
+                              'password': _passwordController.text,
+                            });
+
+                            setState(() {
+                              _isLoading = false;
+
+                              if(response.statusCode >= 200 &&response.statusCode < 300){
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginScreen(),
+                                  ),
+                                  (Route<dynamic> route) => false,);
+                              }else{
+                                final responseData = jsonDecode(response);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                   SnackBar(
+                                    content: Text(responseData["message"]),
+                                  ),
+                                );
+                              }
+
+                            });
+                          }
+                        },
                   child: const Text('Sign Up'),
                 ),
                 const SizedBox(height: 10),
