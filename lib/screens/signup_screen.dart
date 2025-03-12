@@ -1,5 +1,7 @@
+// Suggested code may be subject to a license. Learn more: ~LicenseLog:1346430164.
 import 'dart:convert';
-
+import 'dart:typed_data';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/screens/login_screen.dart';
 
@@ -134,10 +136,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             setState(() {
                               _isLoading = true;
                             });
+                            
+                            final bytes = utf8.encode(_passwordController.text);
+                            final digest = sha256.convert(bytes);
+                            
                             var response = await ApiService.post('signup', {
                               'name': _nameController.text,
                               'email': _emailController.text,
-                              'password': _passwordController.text,
+                              'password': digest.toString(),
                             });
 
                             setState(() {
