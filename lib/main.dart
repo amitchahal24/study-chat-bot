@@ -1,12 +1,11 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
-import 'package:myapp/screens/chat_screen.dart';
+import 'package:myapp/screens/splash_screen.dart';
 
-import 'screens/demo_ai_screen.dart';
 import 'screens/signup_screen.dart';
 
 const apiKey = '--';
-
 
 void main() {
    Gemini.init(apiKey: apiKey);
@@ -21,90 +20,45 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-  // Define the overall brightness of the theme.
-  brightness: Brightness.light,
-
-  // Primary Color
-  primaryColor: const Color(0xFFFF9800), // Vibrant Orange
-
-  // ColorScheme for Material 3 (more dynamic color system)
-  colorScheme: const ColorScheme.light(
-    primary: Color(0xFFFF9800), // Vibrant Orange
-    secondary: Color(0xFFFFC107), // Light Beige
-    surface: Color(0xFFF5F5DC), // Light Beige (same as background for flat surfaces)
-    error: Colors.red,
-    onPrimary: Colors.black, // Text color on primary color
-    onSecondary: Colors.black, // Dark Brown text on background
-    onSurface: Color(0xFF3E2723), // Dark Brown text on surface
-    onError: Colors.white,
-  ),
-
-  // Define text theme to be used in the app
-  textTheme: const TextTheme(
-    headlineLarge: TextStyle(
-      fontSize: 34.0,
-      fontWeight: FontWeight.bold,
-      color: Color(0xFF3E2723), // Dark Brown
+      theme: // Suggested code may be subject to a license. Learn more: ~LicenseLog:4051710695.
+      ThemeData(
+    colorScheme: ColorScheme.light(
+      primary: const Color(0xFFBBDEFB), // Light Blue
+      secondary: const Color(0xFFF0F0F0), // White
+      surface: const Color(0xFFF0F0F0), // Light Gray
+      onPrimary: const Color(0xFF1976D2), // Dark Blue (text on light blue)
+      onSecondary: const Color(0xFF000000), //Black
+      onSurface: const Color(0xFF000000), //Black
+      onError: Colors.white, // white
+      error: Colors.red, //red
     ),
-    headlineMedium: TextStyle(
-      fontSize: 24.0,
-      fontWeight: FontWeight.bold,
-      color: Color(0xFF3E2723), // Dark Brown
-    ),
-    headlineSmall: TextStyle(
-      fontSize: 20.0,
-      fontWeight: FontWeight.w600,
-      color: Color(0xFF3E2723), // Dark Brown
-    ),
-    bodyLarge: TextStyle(
-      fontSize: 18.0,
-      color: Color(0xFF3E2723), // Dark Brown
-    ),
-    bodyMedium: TextStyle(
-      fontSize: 16.0,
-      color: Color
-(0xFF3E2723), // Dark Brown
-    ),
-    bodySmall: TextStyle(
-      fontSize: 14.0,
-      color: Color(0xFF3E2723), // Dark Brown
-    ),
-  ),
-
-  // AppBar Theme
-  appBarTheme: const AppBarTheme(
-    backgroundColor: Color(0xFFFF9800), // Vibrant Orange
-    foregroundColor: Colors.black,
-    elevation: 2.0,
-    titleTextStyle: TextStyle(color: Color(0xFFFF9800))
-  ),
-
-  // Button Theme
-  elevatedButtonTheme: ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      backgroundColor: const Color(0xFF2196F3), // Blue Accent
-      foregroundColor: Colors.white, // White Text on buttons
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-    ),
-  ),
-  textButtonTheme: TextButtonThemeData(
-    style: TextButton.styleFrom(
-        foregroundColor: const Color(0xFF2196F3) // Blue Accent
+    // You can customize other aspects of the theme here, such as:
+    textTheme: const TextTheme(
+      // Customize text styles here
+      bodyMedium: TextStyle(
+        color: Color(0xFF000000), // Example: Dark text color
+      ),
+        bodyLarge: TextStyle(
+          color: Color(0xFF000000), // Example: Dark text color
         ),
+      bodySmall: TextStyle(
+        color: Color(0xFF000000), // Example: Dark text color
+      ),
+    ),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Color(0xFFBBDEFB), // Example: Light blue app bar
+      foregroundColor: Color(0xFF000000), // Example: Black text in the app bar
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFBBDEFB),
+          foregroundColor: const Color(0xFF000000),
+        )
+    ),
+    useMaterial3: true,
   ),
 
-  // FloatingActionButton Theme
-  floatingActionButtonTheme: const FloatingActionButtonThemeData(
-    backgroundColor: Color(0xFF2196F3), // Blue Accent
-    foregroundColor: Colors.white,
-  ),
-
-  // Other UI elements can be customized here
-),
-      home: const SignUpScreen(),
+      home:  SplashScreen(),
     );
   }
 }
@@ -155,9 +109,9 @@ class _MyHomePageState extends State<MyHomePage> {
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
         // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
+        // Here we take the value from the MyHomePage object that was created by.
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text(widget.title, style: TextStyle(color: Color(0xFFFFECB3)),),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
