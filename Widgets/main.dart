@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:myapp/screens/splash_screen.dart';
 
-import 'screens/signup_screen.dart';
+import '../lib/screens/signup_screen.dart';
 
 const apiKey = '--';
 
