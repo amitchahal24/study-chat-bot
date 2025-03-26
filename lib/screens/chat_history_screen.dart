@@ -1,7 +1,10 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
+import '../models/chat_list_model.dart';
 import '../services/api_service.dart';
 
 class ChatHistoryScreen extends StatefulWidget {
@@ -13,8 +16,8 @@ class ChatHistoryScreen extends StatefulWidget {
 }
 
 class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
-  final List<Map<String, String>> _chats = [];
-  List<Map<String, String>> _filteredChats = [];
+  final List<ChatListModel> _chats = [];
+  List<ChatListModel> _filteredChats = [];
   final TextEditingController _searchController = TextEditingController();
   bool _isSearchBarVisible = false;
   bool _isLoading = false;
@@ -24,33 +27,86 @@ class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
     super.initState();
     _filteredChats = List.from(_chats);
     _searchController.addListener(_onSearchChanged);
-    _fetchChats();
+    _loadChats();
   }
 
-  Future<void> _fetchChats() async {
+  void _loadChats() async {
+    try {
+      List<ChatListModel>? chatList = await _fetchChats();
+      setState(() {
+        _chats.clear();
+        // _chats.addAll(chats);
+        // _filteredChats = List.from(_chats);
+      });
+      for (var chat in chatList!) {
+        if (kDebugMode) {
+          print('${chat.chatName}: ${chat.chatSessionId} : ${chat.createdAt}');
+        } // Debugging
+        setState(() {
+          _chats.add(chat);
+        });
+      }
+      setState(() {
+
+        _filteredChats = List.from(_chats);
+      });
+
+        } catch (e) {
+      if (kDebugMode) {
+        print('Error: $e');
+      }
+    }
+  }
+
+  Future<List<ChatListModel>?> _fetchChats() async {
     setState(() {
       _isLoading = true;
     });
     try {
-      final chats = await ApiService.get('chats/${widget.userId}');
-      setState(() {
-        _chats.clear();
-        _chats.addAll(chats);
-        _filteredChats = List.from(_chats);
-      });
-      final responseData = jsonDecode(chats[0]);
-      print(responseData);
-      setState(() {
-        _isLoading = false;
-      });
+      final response = await ApiService.get('chats/${widget.userId}');
+
+      if (response.statusCode == 200) {
+        setState(() {
+          _isLoading = false;
+        });
+        final List<dynamic> jsonData = jsonDecode(response.body);
+
+        return jsonData.map((item) => ChatListModel.fromJson(item)).toList(); // Map JSON to Chat objects
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        throw Exception('Failed to load data');
+      }
     } catch (e) {
       setState(() {
         _isLoading = false;
       });
+      if (kDebugMode) {
+        print(e);
+      }
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Failed to load chats: $e')));
     }
+    return null;
+  }
+
+  String formatDateTimePST(String dateTimeString) {
+    // Parse the input string into a DateTime object (UTC).
+    DateTime utcDateTime = DateTime.parse(dateTimeString);
+
+    // Convert the UTC DateTime to PST.
+    // PST is UTC-8, so we subtract 8 hours.
+    DateTime pstDateTime = utcDateTime.subtract(Duration(hours: 8));
+
+    // Format the PST DateTime into a string.
+    // You can customize the format as needed.
+    // Example: 'yyyy-MM-dd HH:mm:ss' for '2023-10-27 10:30:00'
+    // Example: 'MMM dd, yyyy hh:mm a' for 'Oct 27, 2023 10:30 AM'
+    String formattedDateTime = DateFormat('yyyy-MM-dd hh:mm a').format(pstDateTime);
+
+    return formattedDateTime;
   }
 
   @override
@@ -65,9 +121,9 @@ class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
     setState(() {
       _filteredChats =
           _chats.where((chat) {
-            final name = chat['name']!.toLowerCase();
-            final date = chat['date']!.toLowerCase();
-            return name.contains(query) || date.contains(query);
+            final chatName = chat.chatName.toLowerCase();
+            final createdAt = chat.createdAt.toLowerCase();
+            return chatName.contains(query) || createdAt.contains(query);
           }).toList();
     });
   }
@@ -107,13 +163,13 @@ class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
         ],
         bottom: bottomAppBar,
       ),
-      body: ListView.builder(
+      body: _isLoading?const Center(child:CircularProgressIndicator()):ListView.builder(
         itemCount: _filteredChats.length,
         itemBuilder: (context, index) {
           final chat = _filteredChats[index];
           return ListTile(
-            title: Text(chat['name']!),
-            subtitle: Text(chat['date']!),
+            title: Text(chat.chatName),
+            subtitle: Text(formatDateTimePST(chat.createdAt)),
             trailing: IconButton(
               icon: const Icon(Icons.delete),
               onPressed: () {
