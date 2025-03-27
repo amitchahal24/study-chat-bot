@@ -1,7 +1,8 @@
-
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'chat_screen.dart';
 import 'login_screen.dart';
 
@@ -22,25 +23,15 @@ class _SplashScreenState extends State<SplashScreen> {
     String? userId = prefs.getString('userId');
     Timer(Duration(seconds: 2), () {
       if (userId == null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LogInScreen()),
-        );
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LogInScreen()));
       } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ChatScreen()),
-        );
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ChatScreen(chatSessionId: '')));
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Image.asset('assets/images/logo.png'),
-      ),
-    );
+    return Scaffold(body: Center(child: Image.asset('assets/images/logo.png')));
   }
 }

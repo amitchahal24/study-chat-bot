@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../models/chat_list_model.dart';
 import '../services/api_service.dart';
+import 'chat_screen.dart';
 
 class ChatHistoryScreen extends StatefulWidget {
   final String userId;
@@ -47,11 +48,9 @@ class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
         });
       }
       setState(() {
-
         _filteredChats = List.from(_chats);
       });
-
-        } catch (e) {
+    } catch (e) {
       if (kDebugMode) {
         print('Error: $e');
       }
@@ -85,9 +84,7 @@ class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
       if (kDebugMode) {
         print(e);
       }
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Failed to load chats: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to load chats: $e')));
     }
     return null;
   }
@@ -104,9 +101,28 @@ class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
     // You can customize the format as needed.
     // Example: 'yyyy-MM-dd HH:mm:ss' for '2023-10-27 10:30:00'
     // Example: 'MMM dd, yyyy hh:mm a' for 'Oct 27, 2023 10:30 AM'
-    String formattedDateTime = DateFormat('yyyy-MM-dd hh:mm a').format(pstDateTime);
+    String formattedDateTime = DateFormat('MMM dd, yyyy hh:mm a').format(pstDateTime);
 
     return formattedDateTime;
+  }
+
+  Future<void> _deleteChat(String chatSessionId) async {
+    try {
+      final response = await ApiService.delete('chat/$chatSessionId');
+      if (response.statusCode == 200) {
+        if (kDebugMode) {
+          print('Chat deleted successfully: $chatSessionId');
+        }
+        _loadChats();
+      } else {
+        throw Exception('Failed to delete chat');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error deleting chat: $e');
+      }
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to delete chat: $e')));
+    }
   }
 
   @override
@@ -134,15 +150,7 @@ class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
     if (_isSearchBarVisible) {
       bottomAppBar = PreferredSize(
         preferredSize: const Size.fromHeight(48.0),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextField(
-            controller: _searchController,
-            decoration: const InputDecoration(
-              hintText: 'Search by name or date',
-            ),
-          ),
-        ),
+        child: Padding(padding: const EdgeInsets.all(8.0), child: TextField(controller: _searchController, decoration: const InputDecoration(hintText: 'Search by name or date'))),
       );
     } else {
       bottomAppBar = null;
@@ -163,25 +171,28 @@ class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
         ],
         bottom: bottomAppBar,
       ),
-      body: _isLoading?const Center(child:CircularProgressIndicator()):ListView.builder(
-        itemCount: _filteredChats.length,
-        itemBuilder: (context, index) {
-          final chat = _filteredChats[index];
-          return ListTile(
-            title: Text(chat.chatName),
-            subtitle: Text(formatDateTimePST(chat.createdAt)),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () {
-                setState(() {
-                  _chats.removeAt(index);
-                });
-              },
-            ),
-            onTap: () {},
-          );
-        },
-      ),
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : ListView.builder(
+                itemCount: _filteredChats.length,
+                itemBuilder: (context, index) {
+                  final chat = _filteredChats[index];
+                  return ListTile(
+                    title: Text(chat.chatName, style: TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: Text(formatDateTimePST(chat.createdAt)),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {
+                        _deleteChat(chat.chatSessionId);
+                      },
+                    ),
+                    onTap: () {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ChatScreen(chatSessionId: chat.chatSessionId)));
+                    },
+                  );
+                },
+              ),
     );
   }
 }

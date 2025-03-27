@@ -3,22 +3,21 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const baseUrl = 'https://3000-idx-study-chat-bot-api-1741800175044.cluster-pb4ljhlmg5hqsxnzpc56r3prxw.cloudworkstations.dev/';
+  static const baseUrl = 'https://3000-idx-study-chat-bot-api-1743088095196.cluster-cxy3ise3prdrmx53pigwexthgs.cloudworkstations.dev/';
 
   //Handle API response
   static dynamic _processResponse(http.Response response) {
     return response;
-  
-  //   if (response.statusCode >= 200 && response.statusCode < 300) {
-  //     return response.body;
-  //   } else {
-  //     return {
-  //       "error": "Request failed",
-  //       "statusCode": response.statusCode,
-  //       "body": response.body,
-  //     };
-  //   }
-    }
+    // if (response.statusCode >= 200 && response.statusCode < 300) {
+    //   return response.body;
+    // } else {
+    //   return {
+    //     "error": "Request failed",
+    //     "statusCode": response.statusCode,
+    //     "body": response.body,
+    //   };
+    // }
+  }
 
   //Generic GET request
   static Future<dynamic> get(String endpoint) async {
@@ -31,16 +30,9 @@ class ApiService {
   }
 
   //Generic POST request
-  static Future<dynamic> post(
-    String endpoint,
-    Map<String, dynamic> data,
-  ) async {
+  static Future<dynamic> post(String endpoint, Map<String, dynamic> data) async {
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrl$endpoint'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(data),
-      );
+      final response = await http.post(Uri.parse('$baseUrl$endpoint'), headers: {'Content-Type': 'application/json'}, body: jsonEncode(data));
       return _processResponse(response);
     } catch (e) {
       return {"error": "Failed to connect to the server: $e"};
@@ -51,11 +43,7 @@ class ApiService {
   static Future<dynamic> put(String endpoint, Map<String, dynamic> data) async {
     // Suggested code may be subject to a license. Learn more: ~LicenseLog:1372389514.
     try {
-      final response = await http.put(
-        Uri.parse('$baseUrl$endpoint'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(data),
-      );
+      final response = await http.put(Uri.parse('$baseUrl$endpoint'), headers: {'Content-Type': 'application/json'}, body: jsonEncode(data));
       return _processResponse(response);
     } catch (e) {
       return {"error": "Failed to connect to the server: $e"};

@@ -1,14 +1,10 @@
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:143473964.
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:1184206053.
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:2063831658.
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:227314272.
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-import 'package:myapp/screens/login_screen.dart';
-
 import 'package:crypto/crypto.dart';
+import 'package:flutter/material.dart';
+
 import '../services/api_service.dart';
+import 'login_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -81,11 +77,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         decoration: InputDecoration(
                           labelText: 'Password',
                           suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscurePassword
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                            ),
+                            icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
                             onPressed: () {
                               setState(() {
                                 _obscurePassword = !_obscurePassword;
@@ -110,15 +102,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         decoration: InputDecoration(
                           labelText: 'Confirm Password',
                           suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscureConfirmPassword
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                            ),
+                            icon: Icon(_obscureConfirmPassword ? Icons.visibility : Icons.visibility_off),
                             onPressed: () {
                               setState(() {
-                                _obscureConfirmPassword =
-                                    !_obscureConfirmPassword;
+                                _obscureConfirmPassword = !_obscureConfirmPassword;
                               });
                             },
                           ),
@@ -146,31 +133,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             var passwordBytes = utf8.encode(_passwordController.text);
                             var passwordDigest = sha256.convert(passwordBytes);
 
-                            var response = await ApiService.post('signup', {
-                              'name': _nameController.text,
-                              'email': _emailController.text,
-                              'password': passwordDigest.toString(),
-                            });
+                            var response = await ApiService.post('signup', {'name': _nameController.text, 'email': _emailController.text, 'password': passwordDigest.toString()});
+                            print(response);
+
                             setState(() {
                               _isLoading = false;
 
-                              if (response.statusCode >= 200 &&
-                                  response.statusCode < 300) {
-                                Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                    builder: (context) => const LogInScreen(),
-                                  ),
-                                  (Route<dynamic> route) => false,
-                                );
+                              if (response.statusCode >= 200 && response.statusCode < 300) {
+                                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const LogInScreen()), (Route<dynamic> route) => false);
                               } else {
                                 final responseData = jsonDecode(response);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(responseData["message"]),
-                                  ),
-                                );
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(responseData["message"])));
                               }
-                              
                             });
                           }
                         },
@@ -183,12 +157,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           const Text("Already have an account?"),
                           TextButton(
                             onPressed: () {
-                              Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                  builder: (context) => const LogInScreen(),
-                                ),
-                                (Route<dynamic> route) => false,
-                              );
+                              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const LogInScreen()), (Route<dynamic> route) => false);
                             },
                             child: const Text('Login'),
                           ),
