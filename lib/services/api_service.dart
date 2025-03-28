@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const baseUrl = 'https://3000-idx-study-chat-bot-api-1743088095196.cluster-cxy3ise3prdrmx53pigwexthgs.cloudworkstations.dev/';
+  static const baseUrl = 'https://3000-idx-study-chat-bot-api-1741800175044.cluster-pb4ljhlmg5hqsxnzpc56r3prxw.cloudworkstations.dev/';
 
   //Handle API response
   static dynamic _processResponse(http.Response response) {

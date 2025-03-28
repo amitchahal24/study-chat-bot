@@ -150,18 +150,18 @@ class _QuizChatScreenState extends State<QuizChatScreen> {
         // Parse the quiz object.
         final Map<String, dynamic> quiz = data['quiz'];
         final String quizEntry = quiz['quiz entry'];
-        final String answerKey = quiz['answer key'];
+        final String answer_Key = quiz['answer key'];
         final String title = quiz['title'];
 
         // Display the parsed quiz fields along with the response.
         if (kDebugMode) {
           print('Quiz Entry: $quizEntry');
-          print('Answer Key: $answerKey');
+          print('Answer Key: $answer_Key');
           print('Title: $title');
           print('Response: ${data['response']}');
         }
 
-        final modelMessage = '${data['response']}\n\nQuiz: \n\n Title: $title\n Quiz Questions: $quizEntry\n\nAnswer Key: $answerKey\n';
+        final modelMessage = '${data['response']}\n\nQuiz: \n\n Title: $title\n Quiz Questions: $quizEntry\n\nAnswer Key: $answer_Key\n';
         setState(() {
           _isLoading = false;
           _messages.add(ChatMessage(text: modelMessage, sender: "model"));
@@ -183,7 +183,7 @@ class _QuizChatScreenState extends State<QuizChatScreen> {
                 TextButton(
                   child: const Text('Add'),
                   onPressed: () {
-                    _saveQuizEntry(title, answerKey, quizEntry);
+                    _saveQuizEntry(title, answer_Key, quizEntry);
                     Navigator.of(context).pop();
                   },
                 ),

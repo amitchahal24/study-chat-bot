@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:myapp/screens/chat_screen.dart';
 
 import 'screens/splash_screen.dart';
 
@@ -95,7 +96,7 @@ class MyApp extends StatelessWidget {
 
         // Other UI elements can be customized here
       ),
-      home: SplashScreen(),
+      home: ChatScreen(chatSessionId: '',),
     );
   }
 }
